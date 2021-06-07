@@ -3,6 +3,8 @@
 
 - 출처: 야곰의 스위프트4
 
+
+
 - 일급 객체(First-Class Citizen)의 의미에 대해 알기 위해서는 우선 함수형 프로그래밍 패러다임에 대해 알아야 합니다.
 
 - 함수형 프로그래밍
@@ -25,3 +27,97 @@
   - 변수나 데이터 구조 안에 담을 수 있습니다.
   - 반환 값으로 사용할 수 있습니다.
   - 할당할 때 사용된 이름과 관계없이 고유한 객체로 구별할 수 있습니다.
+
+- 기존의 스칼라 타입인 정수, 실수 등은 거의 모든 언어에서 일급 객체의 조건을 갖출 수 있지만, 대부분의 함수는 그렇지 않습니다.
+- 하지만 스위프트의 함수는 이 조건을 모두 충족할 수 있기에 함수를 일급 객체로 취급합니다. 함수가 일급 객체가 된다는 의미는 다양한 종류의 함수를 호출하고, 전달하고, 반환하는 등의 동작만으로도 프로그램을 구현할 수 있다는 뜻입니다.
+- (코드) 명령형 프로그래밍 패러다임과 함수형 프로그래밍 패러다임의 비교
+```swift
+
+// (1) doSomething 함수와 doAnotherThing 함수를 모두 처리하고 싶을 경우
+// 명령형 프로그래밍 패러다임
+func doSomething {
+  print("do something")
+}
+
+func doAnotherThing() {
+  print("do another thing")
+}
+
+func executeAll() {
+  doSomething()
+  doAnotherThing()
+}
+
+executeAll()
+
+////////////////////////
+
+// 함수형 프로그래밍 패러다임
+func doSomething() {
+  print("do something")
+}
+
+func doAnotherThing() {
+  print("do another thing")
+}
+
+func execute(tasks: [() -> Void]) {
+  for task in tasks {
+    task()
+  }
+}
+
+execute(tasks: [doSomething, doAnotherThing])
+
+////////////////////////
+// (2) 두 수의 합을 구하고 싶은 경우
+
+// 명령형 프로그래밍 패러다임
+func sum(first: Int, second: Int) -> Int {
+  return first + second
+}
+sum(first: 10, second: 5)
+
+// 함수형 프로그래밍 패러다임
+func sum(first: Int) -> ((Int) -> Int) {
+  return { second in first + second }
+}
+
+sum(first: 10)(5)
+////////////////////////
+```
+- 함수형 프로그래밍 패러다임 안에서는 함수가 일급 객체이므로 전달인자 또는 반환 값으로 사용할 수 있습니다.
+- 따라서 execute(tasks: [doSomething, doAnotherThing])처럼 doSomething 함수와 doAnotherThing 함수를 전달인자로 사용할 수 있습니다.
+- 또, 덧셈 함수인 sum 역시 함수형 프로그래밍 패러다임에서 즐겨 사용되는 커링 기법으로 전달인자를 하나만 두고 반환하면서 second in first + second처럼 전달인자를 사용할 수 있습니다.
+- ** 커링: 여러 개의 매개변수를 갖는 함수를 매개변수 하나를 갖는 함수의 나열로 표현하는 방법
+- 또한 함수형 프로그래밍 패러다임은 위에 제시한 간단한 차이 외에도 모나드(Monad), 함수객체(Functor), 필터(Filter), 맵(Map), 플랫맵(FlatMap), 리듀스(Reduce) 등의 기능을 사용할 수 있습니다.
+
+* 명령형 프로그래밍과 함수형 프로그래밍의비교
+(1) 프로그래머가 초점을 두는 곳
+- 명령형 프로그래밍
+  - 작업 수행 알고리즘
+  - 상태의 변경 추적
+- 함수형 프로그래밍
+  - 원하는 정보
+  - 필요한 변환
+(2) 상태 변경
+- 명령형 프로그래밍
+  - 중요
+- 함수형 프로그래밍
+  - 없음
+(3) 실행 순서
+- 명령형 프로그래밍
+  - 중요
+- 함수형 프로그래밍
+  - 낮은 중요도
+(4) 주요 흐름 제어
+- 명령형 프로그래밍
+  - 제어 구문(반복문, 조건문 등)
+  - 함수(메서드) 호출
+- 함수형 프로그래밍
+  - 순환(재귀)함수 호출 등의 함수 호출로 제어
+(5) 주요 조작 단위
+- 명령형 프로그래밍
+  - 클래스나 구조체의 인스턴스
+- 함수형 프로그래밍
+  - 함수
